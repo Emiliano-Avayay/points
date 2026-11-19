@@ -1,0 +1,14 @@
+node_modules
+dist
+e2e
+test-results
+playwright-report
+playwright-screens
+playwright.config.ts
+.claude
+.git
+.env
+*.local
+.DS_Store
+CLAUDE.md
+docker-compose.yml

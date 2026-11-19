@@ -1,0 +1,27 @@
+# SUMMA — demo de fidelización. Uso: docker compose up -d --build
+name: summa
+
+services:
+  summa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: summa-demo:latest
+    restart: unless-stopped
+    # Por defecto solo escucha en localhost. Para exponerlo detrás de un proxy, ver CLAUDE.md.
+    ports:
+      - "${SUMMA_BIND_HOST:-127.0.0.1}:${SUMMA_PORT:-8092}:8080"
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s

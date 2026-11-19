@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+  <rect width="640" height="640" fill="#0b0b0d"/>
+  <circle cx="560" cy="70" r="210" fill="#dcfb07"/>
+  <circle cx="40" cy="640" r="150" fill="#dcfb07" opacity=".22"/>
+  <g transform="rotate(-8 320 330)">
+    <path d="M110 220 h420 a24 24 0 0 1 24 24 v40 a40 40 0 0 0 0 80 v40 a24 24 0 0 1 -24 24 h-420 a24 24 0 0 1 -24 -24 v-40 a40 40 0 0 0 0 -80 v-40 a24 24 0 0 1 24 -24z" fill="#dcfb07"/>
+    <line x1="400" y1="236" x2="400" y2="412" stroke="#0b0b0d" stroke-width="5" stroke-dasharray="14 12"/>
+    <text x="245" y="358" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-weight="800" font-size="132" fill="#0b0b0d">20%</text>
+    <text x="245" y="394" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-weight="600" font-size="30" fill="#0b0b0d">DE DESCUENTO</text>
+    <path d="M476 300 l-36 54 M446 304 a8 8 0 1 0 0.1 0 M470 346 a8 8 0 1 0 0.1 0" stroke="#0b0b0d" stroke-width="7" stroke-linecap="round" fill="#0b0b0d"/>
+  </g>
+</svg>

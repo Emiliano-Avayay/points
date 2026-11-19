@@ -1,0 +1,161 @@
+@import 'tailwindcss';
+
+/* Poppins autoalojada (sin dependencias externas en runtime) */
+@import '@fontsource/poppins/latin-400.css';
+@import '@fontsource/poppins/latin-500.css';
+@import '@fontsource/poppins/latin-600.css';
+@import '@fontsource/poppins/latin-700.css';
+@import '@fontsource/poppins/latin-800.css';
+
+/*
+ * Tokens de SUMMA.
+ * El lima se usa como superficie (con texto negro, contraste 17:1), nunca como texto sobre blanco.
+ * Para texto "lima" sobre fondo claro se usa --color-olive (contraste 7.6:1).
+ */
+@theme {
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-lime: #dcfb07;
+  --color-lime-strong: #c6e400;
+  --color-lime-deep: #a9c300;
+  --color-lime-soft: #f1fdb0;
+  --color-lime-wash: #f8fedb;
+  --color-olive: #4a5800;
+  --color-ink: #0b0b0d;
+  --color-ink-2: #1c1c21;
+  --color-ink-3: #2c2c33;
+  --color-muted: #63636b;
+  --color-subtle: #8a8a93;
+  --color-line: #e6e6ea;
+  --color-line-strong: #d3d3d9;
+  --color-surface: #f4f4f5;
+  --color-canvas: #fafafa;
+  --color-success: #13803d;
+  --color-success-soft: #e3f6e9;
+  --color-warning: #a14b00;
+  --color-warning-soft: #fff1df;
+  --color-danger: #c8261b;
+  --color-danger-soft: #fdeceb;
+
+  --radius-card: 1.75rem;
+  --radius-tile: 1.25rem;
+
+  --shadow-card: 0 1px 2px rgb(11 11 13 / 0.04), 0 10px 28px -12px rgb(11 11 13 / 0.14);
+  --shadow-float: 0 12px 32px -10px rgb(11 11 13 / 0.28);
+  --shadow-lime: 0 10px 24px -8px rgb(169 195 0 / 0.65);
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --animate-fade-up: fade-up 320ms var(--ease-out-quart) both;
+  --animate-sheet-up: sheet-up 280ms var(--ease-out-quart) both;
+  --animate-pop: pop 360ms var(--ease-out-quart) both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes sheet-up {
+    from {
+      transform: translateY(24px);
+      opacity: 0;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+  @keyframes pop {
+    0% {
+      transform: scale(0.85);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.04);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+    font-feature-settings: 'ss01';
+    overflow-x: hidden;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 2px;
+    border-radius: 0.5rem;
+  }
+  .on-dark :focus-visible,
+  .on-dark:focus-visible {
+    outline-color: var(--color-lime);
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  a,
+  label[for],
+  select {
+    cursor: pointer;
+  }
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+@layer utilities {
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* Espacio para que la barra inferior fija nunca tape contenido */
+  .pb-nav {
+    padding-bottom: calc(7.5rem + env(safe-area-inset-bottom));
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
