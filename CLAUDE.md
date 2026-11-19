@@ -4,7 +4,7 @@
 
 ## 1. Estado de entrega (2026-11-19)
 
-**Demo comercial completa, ejecutable, probada y dockerizada.** Acceso local: **http://localhost:8092**
+**Demo comercial completa, ejecutable, probada y dockerizada.** Acceso local: **http://localhost:8081**
 
 | Ítem | Estado |
 |---|---|
@@ -137,7 +137,7 @@ Fuente de verdad: las dos capturas de referencia de SUMMA. Se consultó la skill
 |---|---|
 | `npm run typecheck` / `npm run build` | ✅ sin errores |
 | `npm test` (Vitest, 37 tests) | ✅ cálculo de puntos, acreditación, ajustes, saldo insuficiente, canjes, doble canje (dominio y store), independencia entre comercios, niveles, referidos, desafíos, encuestas, catálogo, favoritos, persistencia, datos dañados, reset, conciliación del seed, métricas |
-| `npm run test:e2e` (Playwright, 17 tests, viewport móvil) contra `http://localhost:8092` | ✅ recorrido crítico completo con doble clic y sin errores de consola/CSP, saldo insuficiente, búsqueda/filtros/favoritos tras recarga, cambio de comercio, referidos/desafíos/encuestas, copiar enlace, ajuste negativo rechazado, CRUD de premios, crear comercio + estados vacíos + reset, campañas, **sin scroll horizontal en 22 rutas a 320/375/390/430/768/1280 px**, imágenes sin roturas |
+| `npm run test:e2e` (Playwright, 17 tests, viewport móvil) contra `http://localhost:8081` | ✅ recorrido crítico completo con doble clic y sin errores de consola/CSP, saldo insuficiente, búsqueda/filtros/favoritos tras recarga, cambio de comercio, referidos/desafíos/encuestas, copiar enlace, ajuste negativo rechazado, CRUD de premios, crear comercio + estados vacíos + reset, campañas, **sin scroll horizontal en 22 rutas a 320/375/390/430/768/1280 px**, imágenes sin roturas |
 | Revisión visual manual (navegador integrado y capturas) | Móvil 320/375, tablet 768 y escritorio 1280: header, grillas, barra inferior, modales, formularios, imágenes, tipografía, estados vacíos, admin responsive |
 
 Recorrido crítico verificado: admin Café Molienda → Sofía → compra $200.000 (+2.000 + 600 por "Semana de beneficios") → saldo 3.180 → vista cliente → canje Vaso térmico (2.000) → saldo 1.180 → admin Canjes muestra el pendiente → Marcar entregado.
@@ -167,7 +167,7 @@ npm install
 npm run dev -- --port 5188      # http://localhost:5188
 npm test                        # Vitest
 npm run test:e2e                # Playwright (build + preview en :4188)
-E2E_BASE_URL=http://localhost:8092 npm run test:e2e   # contra el contenedor
+E2E_BASE_URL=http://localhost:8081 npm run test:e2e   # contra el contenedor
 ```
 
 **Docker** (proyecto aislado `summa`, servicio `summa`, imagen `summa-demo:latest` ≈ 79 MB)
@@ -178,10 +178,11 @@ docker compose logs --tail=100   # logs
 docker compose down              # detener y eliminar el contenedor
 ```
 - Imagen multi-stage: `node:24-alpine` (npm ci, typecheck, `vite build`) → `nginxinc/nginx-unprivileged:1.27-alpine` (usuario 101, puerto interno 8080). La imagen final no contiene Node, Vite ni dependencias de desarrollo.
-- Compose: bind `127.0.0.1:8092` por defecto, `read_only`, `tmpfs` para `/tmp` y caché de Nginx, `cap_drop: ALL`, `no-new-privileges`, healthcheck en `/healthz`. Sin `network_mode: host`, sin privilegios, sin socket de Docker, sin volúmenes.
+- Arranque automático: `restart: always` (el contenedor vuelve solo al reiniciar Docker o el servidor; en Ubuntu habilitar el servicio: `sudo systemctl enable docker`). En macOS, Docker Desktop debe iniciar con la sesión.
+- Compose: bind `127.0.0.1:8081` por defecto, `read_only`, `tmpfs` para `/tmp` y caché de Nginx, `cap_drop: ALL`, `no-new-privileges`, healthcheck en `/healthz`. Sin `network_mode: host`, sin privilegios, sin socket de Docker, sin volúmenes.
 - Nginx (`docker/nginx.conf`): fallback SPA (`try_files … /index.html`), assets con caché inmutable, `index.html` sin caché, gzip, CSP y headers de seguridad, `absolute_redirect off` para proxies.
 
-**Cambiar puerto o interfaz:** copiar `.env.example` a `.env` y editar `SUMMA_PORT` / `SUMMA_BIND_HOST`, o `SUMMA_PORT=8093 docker compose up -d`. Si 8092 está ocupado, elegir otro libre sin detener la otra aplicación.
+**Cambiar puerto o interfaz:** copiar `.env.example` a `.env` y editar `SUMMA_PORT` / `SUMMA_BIND_HOST`, o `SUMMA_PORT=8082 docker compose up -d`. Si 8081 está ocupado, elegir otro libre sin detener la otra aplicación.
 
 **Actualizar:** copiar el código nuevo y `docker compose up -d --build`. Para limpiar imágenes viejas: `docker image prune`.
 
@@ -199,14 +200,14 @@ docker compose down              # detener y eliminar el contenedor
 server {
     server_name summa.ejemplo.com;
     location / {
-        proxy_pass http://127.0.0.1:8092;
+        proxy_pass http://127.0.0.1:8081;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 ```
-Caddy equivalente: `summa.ejemplo.com { reverse_proxy 127.0.0.1:8092 }` (HTTPS automático).
+Caddy equivalente: `summa.ejemplo.com { reverse_proxy 127.0.0.1:8081 }` (HTTPS automático).
 
 **HTTPS más adelante:** con Nginx, `sudo certbot --nginx -d summa.ejemplo.com`; con Caddy es automático. La app funciona igual bajo HTTPS (y "Copiar" usa la Clipboard API nativa en contexto seguro; en HTTP usa un fallback).
 

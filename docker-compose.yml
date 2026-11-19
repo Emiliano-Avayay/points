@@ -7,10 +7,10 @@ services:
       context: .
       dockerfile: Dockerfile
     image: summa-demo:latest
-    restart: unless-stopped
+    restart: always
     # Por defecto solo escucha en localhost. Para exponerlo detrás de un proxy, ver CLAUDE.md.
     ports:
-      - "${SUMMA_BIND_HOST:-127.0.0.1}:${SUMMA_PORT:-8092}:8080"
+      - "${SUMMA_BIND_HOST:-127.0.0.1}:${SUMMA_PORT:-8081}:8080"
     read_only: true
     tmpfs:
       - /tmp
